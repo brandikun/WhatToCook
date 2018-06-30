@@ -5,15 +5,16 @@ package com.brandonhimes.whattocook;
  */
 
 class Recipe {
-    String publisher;
-    Double social_rank;
-    String f2f_url;
-    String publisher_url;
-    String title;
-    String source_url;
-    Integer page;
+    private String publisher;
+    private Double social_rank;
+    private String f2f_url;
+    private String publisher_url;
+    private String title;
+    private String source_url;
+    private String image_url;
+    private Integer page;
 
-    public Recipe(String publisher, Double social_rank, String f2f_url, String publisher_url, String title, String source_url, Integer page) {
+    public Recipe(String publisher, Double social_rank, String f2f_url, String publisher_url, String title, String source_url, Integer page, String image_url) {
         this.publisher = publisher;
         this.social_rank = social_rank;
         this.f2f_url = f2f_url;
@@ -21,6 +22,7 @@ class Recipe {
         this.title = title;
         this.source_url = source_url;
         this.page = page;
+        this.image_url = image_url;
     }
 
     public String getPublisher() {
@@ -49,5 +51,9 @@ class Recipe {
 
     public Integer getPage() {
         return page;
+    }
+
+    public String getImage_url() {
+        return image_url;
     }
 }

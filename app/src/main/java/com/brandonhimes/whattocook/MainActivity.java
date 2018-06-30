@@ -3,6 +3,8 @@ package com.brandonhimes.whattocook;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -20,12 +22,16 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
-    String key = "f1d8120be67457590be148d4e3e25e70";
+    private final String key = "f1d8120be67457590be148d4e3e25e70";
+    private RecyclerView mRecipeRecycler;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mRecipeRecycler = findViewById(R.id.recipe_recycler);
+        mRecipeRecycler.setLayoutManager(new LinearLayoutManager(this));
 
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl("http://food2fork.com/api/")
@@ -38,8 +44,8 @@ public class MainActivity extends AppCompatActivity {
         client.ingredientSearch(ingredients, key).enqueue(new Callback<Recipes>() {
             @Override
             public void onResponse(Call<Recipes> call, Response<Recipes> response) {
-                for(int i = 0; i < response.body().getRecipes().size(); i++) {
-                    Log.d("recipe", response.body().getRecipes().get(i).getTitle());
+                if(response.body() != null && response.body().getRecipes() != null) {
+                    mRecipeRecycler.setAdapter(new RecipeResultsAdapter(MainActivity.this, response.body().getRecipes()));
                 }
             }
 

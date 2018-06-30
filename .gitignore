@@ -9,3 +9,7 @@
 .externalNativeBuild
 
 \.idea/
+
+app/src/androidTest/java/com/brandonhimes/whattocook/ExampleInstrumentedTest\.kt
+
+app/src/test/java/com/brandonhimes/whattocook/ExampleUnitTest\.kt
