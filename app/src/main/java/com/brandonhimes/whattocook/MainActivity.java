@@ -1,10 +1,15 @@
 package com.brandonhimes.whattocook;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -22,7 +27,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final String key = "f1d8120be67457590be148d4e3e25e70";
     private RecyclerView mRecipeRecycler;
 
     @Override
@@ -32,26 +36,56 @@ public class MainActivity extends AppCompatActivity {
 
         mRecipeRecycler = findViewById(R.id.recipe_recycler);
         mRecipeRecycler.setLayoutManager(new LinearLayoutManager(this));
+        SearchView searchView = findViewById(R.id.recipe_searchview);
 
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl("http://food2fork.com/api/")
                 .addConverterFactory(GsonConverterFactory.create());
         Retrofit retrofit = builder.build();
 
-        Food2ForkClient client = retrofit.create(Food2ForkClient.class);
-        ArrayList<String> ingredients = new ArrayList<>();
-        ingredients.add("carne asada");
-        client.ingredientSearch(ingredients, key).enqueue(new Callback<Recipes>() {
+        final Food2ForkClient client = retrofit.create(Food2ForkClient.class);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void onResponse(Call<Recipes> call, Response<Recipes> response) {
-                if(response.body() != null && response.body().getRecipes() != null) {
-                    mRecipeRecycler.setAdapter(new RecipeResultsAdapter(MainActivity.this, response.body().getRecipes()));
-                }
+            public boolean onQueryTextSubmit(String query) {
+                ArrayList<String> ingredients = new ArrayList<>();
+                ingredients.add(query);
+                client.ingredientSearch(ingredients, getString(R.string.api_key)).enqueue(new Callback<Recipes>() {
+                    @Override
+                    public void onResponse(Call<Recipes> call, Response<Recipes> response) {
+                        if(response.body() != null && response.body().getRecipes() != null) {
+                            mRecipeRecycler.setAdapter(new RecipeResultsAdapter(MainActivity.this, response.body().getRecipes()));
+                        } else {
+                            mRecipeRecycler.setAdapter(new RecipeResultsAdapter(MainActivity.this, new ArrayList<Recipe>()));
+                            if(response.body().getRecipes().isEmpty()) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, android.R.style.Theme_Material_Dialog_Alert);
+                                builder.setTitle(R.string.no_results_title)
+                                        .setMessage(R.string.no_results_message)
+                                        .setPositiveButton(R.string.ok, (dialog, which) -> dialog.dismiss());
+                            } else {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, android.R.style.Theme_Material_Dialog_Alert);
+                                builder.setTitle(R.string.general_error_title)
+                                        .setMessage(R.string.general_error_message)
+                                        .setPositiveButton(R.string.ok, (dialog, which) -> dialog.dismiss());
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Recipes> call, Throwable t) {
+                        mRecipeRecycler.setAdapter(new RecipeResultsAdapter(MainActivity.this, new ArrayList<Recipe>()));
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, android.R.style.Theme_Material_Dialog_Alert);
+                        builder.setTitle(R.string.network_error_title)
+                                .setMessage(R.string.network_error_message)
+                                .setPositiveButton(R.string.ok, (dialog, which) -> dialog.dismiss());
+                    }
+                });
+                return true;
             }
 
             @Override
-            public void onFailure(Call<Recipes> call, Throwable t) {
-
+            public boolean onQueryTextChange(String newText) {
+                return false;
             }
         });
     }
