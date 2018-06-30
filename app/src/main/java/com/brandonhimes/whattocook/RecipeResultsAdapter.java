@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -37,6 +38,8 @@ public class RecipeResultsAdapter extends RecyclerView.Adapter<RecipeResultsAdap
     public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
         holder.recipeTitle.setText(mRecipeList.get(position).getTitle());
         Picasso.get().load(mRecipeList.get(position).getImage_url()).fit().centerInside().into(holder.recipeImage);
+        holder.recipeRating.setText(mContext.getString(R.string.rating, new DecimalFormat("#0.0").format(mRecipeList.get(position).getSocial_rank())));
+        holder.recipeSource.setText(mContext.getString(R.string.source, mRecipeList.get(position).getPublisher()));
     }
 
     @Override
@@ -47,11 +50,15 @@ public class RecipeResultsAdapter extends RecyclerView.Adapter<RecipeResultsAdap
     public class RecipeViewHolder extends RecyclerView.ViewHolder{
         private TextView recipeTitle;
         private ImageView recipeImage;
+        private TextView recipeRating;
+        private TextView recipeSource;
 
         public RecipeViewHolder(View itemView) {
             super(itemView);
             recipeTitle = itemView.findViewById(R.id.title_textview);
             recipeImage = itemView.findViewById(R.id.recipe_imageview);
+            recipeRating = itemView.findViewById(R.id.rating_textview);
+            recipeSource = itemView.findViewById(R.id.source_textview);
         }
     }
 }
