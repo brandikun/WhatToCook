@@ -50,24 +50,27 @@ public class MainActivity extends AppCompatActivity {
             public boolean onQueryTextSubmit(String query) {
                 ArrayList<String> ingredients = new ArrayList<>();
                 ingredients.add(query);
+                searchView.clearFocus();
                 client.ingredientSearch(ingredients, getString(R.string.api_key)).enqueue(new Callback<Recipes>() {
                     @Override
                     public void onResponse(Call<Recipes> call, Response<Recipes> response) {
                         if(response.body() != null && response.body().getRecipes() != null) {
-                            mRecipeRecycler.setAdapter(new RecipeResultsAdapter(MainActivity.this, response.body().getRecipes()));
-                        } else {
-                            mRecipeRecycler.setAdapter(new RecipeResultsAdapter(MainActivity.this, new ArrayList<Recipe>()));
                             if(response.body().getRecipes().isEmpty()) {
+                                mRecipeRecycler.setAdapter(new RecipeResultsAdapter(MainActivity.this, new ArrayList<Recipe>()));
                                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, android.R.style.Theme_Material_Dialog_Alert);
                                 builder.setTitle(R.string.no_results_title)
                                         .setMessage(R.string.no_results_message)
-                                        .setPositiveButton(R.string.ok, (dialog, which) -> dialog.dismiss());
+                                        .setPositiveButton(R.string.ok, (dialog, which) -> dialog.dismiss())
+                                        .show();
                             } else {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, android.R.style.Theme_Material_Dialog_Alert);
-                                builder.setTitle(R.string.general_error_title)
-                                        .setMessage(R.string.general_error_message)
-                                        .setPositiveButton(R.string.ok, (dialog, which) -> dialog.dismiss());
+                                mRecipeRecycler.setAdapter(new RecipeResultsAdapter(MainActivity.this, response.body().getRecipes()));
                             }
+                        } else {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, android.R.style.Theme_Material_Dialog_Alert);
+                            builder.setTitle(R.string.general_error_title)
+                                    .setMessage(R.string.general_error_message)
+                                    .setPositiveButton(R.string.ok, (dialog, which) -> dialog.dismiss())
+                                    .show();
                         }
                     }
 
@@ -77,7 +80,8 @@ public class MainActivity extends AppCompatActivity {
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, android.R.style.Theme_Material_Dialog_Alert);
                         builder.setTitle(R.string.network_error_title)
                                 .setMessage(R.string.network_error_message)
-                                .setPositiveButton(R.string.ok, (dialog, which) -> dialog.dismiss());
+                                .setPositiveButton(R.string.ok, (dialog, which) -> dialog.dismiss())
+                                .show();
                     }
                 });
                 return true;
