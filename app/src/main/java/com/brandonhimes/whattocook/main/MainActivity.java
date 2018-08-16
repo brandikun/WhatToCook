@@ -1,19 +1,19 @@
-package com.brandonhimes.whattocook;
+package com.brandonhimes.whattocook.main;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
-import android.util.Log;
+import android.widget.SearchView;
+
+import com.brandonhimes.whattocook.models.Recipe;
+import com.brandonhimes.whattocook.remote.Food2ForkClient;
+import com.brandonhimes.whattocook.R;
+import com.brandonhimes.whattocook.models.Recipes;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;

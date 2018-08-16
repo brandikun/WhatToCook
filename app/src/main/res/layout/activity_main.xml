@@ -4,16 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.brandonhimes.whattocook.MainActivity">
-    <android.support.v7.widget.SearchView
+    tools:context="com.brandonhimes.whattocook.main.MainActivity">
+    <SearchView
         android:id="@+id/recipe_searchview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:queryHint="Enter an Ingredient"
-        app:iconifiedByDefault="false"
+        android:queryHint="Enter an Ingredient"
+        android:iconifiedByDefault="false"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/recipe_recycler">
-    </android.support.v7.widget.SearchView>
+    </SearchView>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recipe_recycler"
         android:layout_width="match_parent"

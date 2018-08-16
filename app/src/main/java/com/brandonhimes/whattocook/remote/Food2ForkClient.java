@@ -1,4 +1,6 @@
-package com.brandonhimes.whattocook;
+package com.brandonhimes.whattocook.remote;
+
+import com.brandonhimes.whattocook.models.Recipes;
 
 import java.util.List;
 

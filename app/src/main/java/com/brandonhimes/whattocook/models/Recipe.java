@@ -1,10 +1,10 @@
-package com.brandonhimes.whattocook;
+package com.brandonhimes.whattocook.models;
 
 /**
  * Created by brandon on 6/30/18.
  */
 
-class Recipe {
+public class Recipe {
     private String publisher;
     private Double social_rank;
     private String f2f_url;
